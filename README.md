@@ -4,7 +4,7 @@ Template for running Python microservices
 
 ## Using the template
 
-1) Extend the `samldd/mu-python-template` and set a maintainer.
+1) Extend the `semtech/mu-python-template` and set a maintainer.
 
 2) Configure your entrypoint through the environment variable `APP_ENTRYPOINT` (default: `web.py`).
 
@@ -13,13 +13,13 @@ Template for running Python microservices
 Create the entry point file and add methods with URL's. 
 The flask app is added to the python builtin and can be accessed by using the app variable, as shown in following example:
 
-    @app.route(/exampleMethod)
+    @app.route("/exampleMethod")
     def exampleMethod():
         return example
 
 ## Example Dockerfile
 
-    FROM samldd/mu-python-template:latest
+    FROM semtech/mu-python-template
     MAINTAINER Sam Landuydt <sam.landuydt@gmail.com>
     # ONBUILD of mu-python-template takes care of everything
 
@@ -45,7 +45,7 @@ To use the template while developing your app, start a container in development 
 
     docker run --volume /path/to/your/code:/app
                -e MODE=development
-               -d python-template
+               -d semtech/mu-python-template
 
 Code changes will be automatically picked up by Flask.
 
@@ -97,10 +97,10 @@ Executes the given SPARQL update query.
 Executes a SPARQL query to update the modification date of the given subject URI (string).
 The date defaults to now.
 
-### sparql_escape(var)
+### sparql_escape ; sparql_escape_{string|uri|date|datetime|time|bool|int|float}(value)
 This method can be used to avoid SPARQL injection by escaping user input while constructing a SPARQL query.
 The method checks the type of the given variable and returns the correct object string format,
-depending on the type of the object. Current supported variables are: datetime.time, datetime.date, str, int, float and boolean.
+depending on the type of the object. Current supported variables are: `datetime.time`, `datetime.date`, `str`, `int`, `float` and `boolean`.
 For example:
 
     query =  " INSERT DATA {"
@@ -110,6 +110,8 @@ For example:
     query += "                   <dc:created> %s ." % sparql_escape(date)
     query += "   }"
     query += " }"
+    
+Next to the `sparql_escape`, the template also provides a helper function per datatype that takes any value as parameter. E.g. `sparql_escape_uri("http://mu.semte.ch/application")`.
 
 ## Example
-There is one example method in the template: "/templateExample/" this methods returns all trippels in the tripple store from the sparql endpoint (beware for big databases!).
+There is one example method in the template: `GET /templateExample`. This method returns all triples in the triplestore from the SPARQL endpoint (beware for big databases!).
